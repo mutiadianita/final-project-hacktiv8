@@ -1,63 +1,65 @@
-import { useState, useEffect, useMemo } from 'react';
 import theme from './Theme';
 import { Movie, Header } from 'components';
 import { ThemeProvider } from '@emotion/react';
-import { Container, Grid, Typography } from '@mui/material';
-import axios from 'axios';
+import {
+    CircularProgress,
+    Container,
+    Grid,
+    Typography
+} from '@mui/material';
+import { useFetch } from 'hooks';
+import { styled } from '@mui/material/styles';
 
 const App = () => {
-  const [data, setData] = useState([]);
-  const [search, setSearch] = useState('man');
-  const fetchData = (search) => {
-    axios
-      .get(`https://www.omdbapi.com/?s=${search}&apikey=4244b12a`)
-      .then((res) => setData(res.data.Search))
-      .catch(function (error) {
-        console.log(error);
-      });
-  }
-  useEffect(() => {
-    fetchData(search)
-  }, [search])
+    const defaultSearch = 'man';
 
-  const debounce = (func, timeout = 1000) => {
-    let timer;
-    return (...args) => {
-      clearTimeout(timer);
-      timer = setTimeout(() => { func.apply(this, args); }, timeout);
-    };
-  }
-  const setSearchValue = useMemo(
-    () => debounce((value) => setSearch(value)),
-    [setSearch]
-)
-  const handleSearch = (e) => {
-    const value = e.target.value;
-    if (value!== '') {
-      setSearchValue(value);
-    }
-    else {
-      setSearchValue("man")
-    }
-  }
-  return (
-    <ThemeProvider theme={theme}>
-      <Header onSearch={handleSearch} />
-      <Container>
+    const { data, isLoading, params, setParams } = useFetch(
+        'https://www.omdbapi.com',
+        { apiKey: '4244b12a', s: defaultSearch }
+    )
 
-      <Typography variant="h3" component="h1" my={4} color="primary">Show your favorite movies</Typography>
-        <Grid container spacing={3}>
-          {data?.map((obj, i) => {
-            return (
-              <Grid item xs={12} sm={6} md={4} lg={3} key={`${obj.imdbI}-${i}`}>
-                <Movie title={obj.Title} poster={obj.Poster} year={obj.Year} />
-              </Grid>
-            )
-          })}
-        </Grid>
-      </Container>
-    </ThemeProvider>
-  );
+    const handleOnSearch = (value) => {
+        setParams({ ...params, s: value ? value : defaultSearch })
+    }
+
+    const ContentWrapper = styled('div')(() => ({
+        paddingTop: '200px',
+        width: '100%',
+        textAlign: 'center'
+    }));
+
+    return (
+        <ThemeProvider theme={theme}>
+            <Header setParams={handleOnSearch} />
+            <Container sx={{ py: "64px" }}>
+                <Typography
+                    variant="h4"
+                    component="h1" my={4} color="primary">
+                    Show your favorite movies
+                </Typography>
+                <Grid container spacing={3}>
+                    {isLoading ?
+                        (<ContentWrapper>
+                            <CircularProgress
+                                color="primary"
+                                size={200}
+                                style={{ textAlign: "center" }} />
+                        </ContentWrapper>) :
+                        data?.Search ? data?.Search?.map((obj, i) => {
+                            return (
+                                <Grid item xs={12} sm={6} md={4} lg={3} key={`${obj.imdbI}-${i}`}>
+                                    <Movie title={obj.Title} poster={obj.Poster} year={obj.Year} />
+                                </Grid>
+                            )
+                        }) :
+                            <ContentWrapper>
+                                <Typography variant="h5">Movie Not Found!</Typography>
+                            </ContentWrapper>
+                    }
+                </Grid>
+            </Container>
+        </ThemeProvider>
+    );
 }
 
 export default App;

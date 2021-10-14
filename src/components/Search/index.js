@@ -1,8 +1,6 @@
+import { useMemo } from 'react'
 import { styled, alpha } from '@mui/material/styles';
-import {
-    InputBase
-} from '@mui/material';
-
+import { InputBase } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
 const SearchBar = styled('div')(({ theme }) => ({
@@ -38,24 +36,41 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
         transition: theme.transitions.create('width'),
         width: '100%',
         [theme.breakpoints.up('sm')]: {
-            width: '120px',
+            width: '200px',
             '&:focus': {
-                width: '200px',
+                width: '280px',
             },
         },
     },
 }));
 
-const Search = ({ onSearch }) => {
+const Search = ({ setParams }) => {
+    const debounce = (func, timeout = 500) => {
+        let timer;
+        return (...args) => {
+            clearTimeout(timer);
+            timer = setTimeout(() => { func.apply(this, args); }, timeout);
+        };
+    }
+    
+    const setParamsSearch = useMemo(
+        () => debounce((value) => setParams(value)),
+        [setParams]
+    )
+
+    const handleChange = (event) => {
+        let value = event?.target?.value;
+        setParamsSearch(value)
+    }
+
     return (
         <SearchBar>
             <SearchIconWrapper>
                 <SearchIcon />
             </SearchIconWrapper>
             <StyledInputBase
-                placeholder="Search…"
-                inputProps={{ 'aria-label': 'search' }}
-                onChange={onSearch}
+                placeholder="Search Movies"
+                onChange={handleChange}
             />
         </SearchBar>
     );

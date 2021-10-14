@@ -9,7 +9,7 @@ const Movie = ({ poster, title, year }) => {
   const [raised, setRaised] = useState(false)
   return (
     <Card
-      style={{cursor: "pointer"}}
+      style={{ cursor: "pointer" }}
       raised={raised}
       onMouseOver={() => setRaised(true)}
       onMouseOut={() => setRaised(false)}
@@ -21,7 +21,7 @@ const Movie = ({ poster, title, year }) => {
       />
       <CardMedia
         component="img"
-        height="240"
+        height="480"
         image={poster}
         alt={title}
       />
