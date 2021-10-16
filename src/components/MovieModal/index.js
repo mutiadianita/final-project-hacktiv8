@@ -18,9 +18,9 @@ const style = {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     bgcolor: 'background.paper',
-    width: '50%',
+    width: '75%',
     boxShadow: 24,
-    p: 4,
+    p: 3,
 };
 
 const MovieModal = ({ open, handleClose, imdbID }) => {
@@ -44,10 +44,10 @@ const MovieModal = ({ open, handleClose, imdbID }) => {
                 <Fade in={open}>
                     <Box sx={style}>
                         <Grid container spacing={3}>
-                            <Grid item xs={5}>
+                            <Grid item lg={4} sx={{textAlign: "center", width: "100%"}}>
                                 <img src={data?.Poster} alt={data?.Title} />
                             </Grid>
-                            <Grid item xs={7}>
+                            <Grid item lg={8}>
                                 <Typography variant="h4" component="h2" mb={1}>
                                     {data?.Title} ({data?.Year})
                                 </Typography>
