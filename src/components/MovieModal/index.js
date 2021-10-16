@@ -21,6 +21,9 @@ const style = {
     width: '75%',
     boxShadow: 24,
     p: 3,
+    maxHeight:"90vh",
+    overflow: "scroll"
+
 };
 
 const MovieModal = ({ open, handleClose, imdbID }) => {
@@ -45,7 +48,7 @@ const MovieModal = ({ open, handleClose, imdbID }) => {
                     <Box sx={style}>
                         <Grid container spacing={3}>
                             <Grid item lg={4} sx={{textAlign: "center", width: "100%"}}>
-                                <img src={data?.Poster} alt={data?.Title} />
+                                <img src={data?.Poster} alt={data?.Title}/>
                             </Grid>
                             <Grid item lg={8}>
                                 <Typography variant="h4" component="h2" mb={1}>
