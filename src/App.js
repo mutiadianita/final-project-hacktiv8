@@ -1,5 +1,6 @@
+import { useState } from 'react'
 import theme from './Theme';
-import { Movie, Header } from 'components';
+import { Header, Movie, MovieModal } from 'components';
 import { ThemeProvider } from '@emotion/react';
 import {
     CircularProgress,
@@ -12,6 +13,8 @@ import { styled } from '@mui/material/styles';
 
 const App = () => {
     const defaultSearch = 'man';
+    const [modalShow, setModalShow] = useState(false);
+    const [imdbID, setImdbID] = useState(null)
 
     const { data, isLoading, params, setParams } = useFetch(
         'https://www.omdbapi.com',
@@ -30,6 +33,7 @@ const App = () => {
 
     return (
         <ThemeProvider theme={theme}>
+            <MovieModal open={modalShow} handleClose={() => setModalShow(false)} imdbID={imdbID} />
             <Header setParams={handleOnSearch} />
             <Container sx={{ py: "64px" }}>
                 <Typography
@@ -47,8 +51,17 @@ const App = () => {
                         </ContentWrapper>) :
                         data?.Search ? data?.Search?.map((obj, i) => {
                             return (
-                                <Grid item xs={12} sm={6} md={4} lg={3} key={`${obj.imdbI}-${i}`}>
-                                    <Movie title={obj.Title} poster={obj.Poster} year={obj.Year} />
+                                <Grid item xs={12} sm={6} md={4} lg={3}
+                                    key={`${obj?.imdbID}-${i}`}>
+                                    <Movie
+                                        title={obj?.Title}
+                                        poster={obj?.Poster}
+                                        year={obj?.Year}
+                                        onClick={() => {
+                                            setModalShow(true);
+                                            setImdbID(obj?.imdbID)
+                                        }} />
+
                                 </Grid>
                             )
                         }) :

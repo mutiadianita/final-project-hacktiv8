@@ -5,7 +5,7 @@ import {
   CardMedia
 } from '@mui/material';
 
-const Movie = ({ poster, title, year }) => {
+const Movie = ({ poster, title, year, onClick }) => {
   const [raised, setRaised] = useState(false)
   return (
     <Card
@@ -13,6 +13,7 @@ const Movie = ({ poster, title, year }) => {
       raised={raised}
       onMouseOver={() => setRaised(true)}
       onMouseOut={() => setRaised(false)}
+      onClick={onClick}
     >
       <CardHeader
         title={title}
